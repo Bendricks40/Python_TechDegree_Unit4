@@ -26,3 +26,14 @@ with open('inventory.csv', newline='') as csvfile:
 
 db = SqliteDatabase('inventory.db')
 
+
+class Product(Model):
+    product_id = AutoField()
+    timestamp = DateTimeField()
+    product_name = TextField()
+    product_quantity = IntegerField()
+    product_price = IntegerField()
+
+    class Meta:
+        database = db
+
