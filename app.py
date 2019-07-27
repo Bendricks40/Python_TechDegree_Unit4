@@ -2,7 +2,6 @@ from peewee import *
 import csv
 from datetime import datetime
 from collections import OrderedDict
-import sys
 import os
 
 
