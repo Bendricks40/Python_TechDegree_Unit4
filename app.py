@@ -97,7 +97,7 @@ def add_product():
 
 
 def view_product():
-    """View the details of a specific product"""
+    """View the details of a specific product by entering it's ID"""
     choice = input("Enter the product ID you'd like to see details about: ")
     print("ID:     NAME:                                   DATE UPDATED:        QUANTITY:   PRICE:")
     for product in Product.select().where(Product.product_id == choice):
