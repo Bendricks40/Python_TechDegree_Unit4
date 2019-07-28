@@ -4,7 +4,6 @@ from datetime import datetime
 from collections import OrderedDict
 import os
 
-
 """
 Helpful documentation around Peewee ORM and retrieving data:  http://docs.peewee-orm.com/en/latest/peewee/quickstart.html#retrieving-data
 """
