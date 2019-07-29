@@ -30,9 +30,10 @@ class Product(Model):
 def welcome():
     print('\n')
     print("**************************************  Welcome to Store Inventory!  *************************************")
-    print(" - This app lets you view a database full of store inventory items, and allows you to update as needed")
-    print(' - To begin, view the options below and enter the appropriate letter to make a selection (then press enter)')
-    print('**********************************************************************************************************')
+    print(" * This app lets you view a database full of store inventory items, and allows you to update as needed")
+    print(" * Created by Ben Hendricks as part of TeamTreehouse's Python TechDegree, Unit 4")
+    print(" * To begin, view the options below and enter the appropriate letter to make a selection (then press enter)")
+    print("**********************************************************************************************************")
 
 
 def initialize():
