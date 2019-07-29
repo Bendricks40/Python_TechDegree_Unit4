@@ -62,11 +62,15 @@ def open_and_clean_csv():
 
             # now add the item to the database:
             if Product.select().where(Product.product_name.contains(row['product_name'])):
-                print("The product '{}' already exists. Checking if this is a newer version...".format(row['product_name']))
+                print("The product '{}' already exists. Checking if this is "
+                      "a newer version...".format(row['product_name']))
                 for product in Product.select().where(Product.product_name.contains(row['product_name'])):
-                    print('The existing timestamp for this item is: {}, and the item we are trying to insert has a timestamp of {}'.format(product.timestamp, row['date_updated']))
+                    print('The existing timestamp for this item is: {}, and the '
+                          'item we are trying to insert has a timestamp '
+                          'of {}'.format(product.timestamp, row['date_updated']))
                     if product.timestamp < row['date_updated']:
-                        print('Looks like we have a newer timestamp! Time to update the quantity/price/timestamp with this new info')
+                        print('Looks like we have a newer timestamp! Time to '
+                              'update the quantity/price/timestamp with this new info')
                         product.timestamp = row['date_updated']
                         product.product_quantity = row['product_quantity']
                         product.product_price = row['product_price']
@@ -78,11 +82,6 @@ def open_and_clean_csv():
                                timestamp=row['date_updated'],
                                product_quantity=row['product_quantity'],
                                product_price=row['product_price'])
-
-        # practice querying--finding the "Beans"
-        # for product in Product.select().where(Product.product_name.contains('Beans')):
-            #print(product.product_name)
-            #print(product.product_price)
 
 
 def menu_loop():
@@ -108,19 +107,13 @@ def clear():
 
 def add_product():
     """Add a new product"""
-    print("you made it into the add product function!!!!!!!!")
-    print(datetime.now())
-    theTime = datetime.now()
     newProduct_name = input("Enter a name for the new product: ")
-    newProduct_quantity = input("enter total available quantity for this product: ")
-    newProduct_price = input('enter a price for the product in x.xx format (no dollar sign needed): ')
+    newProduct_quantity = input("Enter total available quantity for this product: ")
+    newProduct_price = input('Enter a price for the product in x.xx format (no dollar sign needed): ')
     Product.create(product_name=newProduct_name,
-                   timestamp= datetime.now().strftime('%Y-%m-%d'),
-                  # timestamp=datetime.strptime('6/8/2018', '%m-%d-%Y'),
+                   timestamp=datetime.now().strftime('%Y-%m-%d'),
                    product_quantity=newProduct_quantity,
                    product_price=newProduct_price)
-
-
 
 
 def view_product():
@@ -130,6 +123,7 @@ def view_product():
     for product in Product.select().where(Product.product_id == choice):
         print_product(product)
     print('\n')
+
 
 def view_every_product():
     """View EVERY product and their details"""
