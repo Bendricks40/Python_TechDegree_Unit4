@@ -1,5 +1,6 @@
 from peewee import *
 import csv
+import datetime
 from datetime import datetime
 from collections import OrderedDict
 import os
@@ -60,12 +61,23 @@ def open_and_clean_csv():
             row['date_updated'] = datetime.strptime(row['date_updated'], '%m/%d/%Y')
 
             # now add the item to the database:
-            Product.create(product_name=row['product_name'],
-                           timestamp=row['date_updated'],
-                           product_quantity=row['product_quantity'],
-                           product_price=row['product_price'])
-
-        # myProducts = Product.select().where(Product.product_name.contains('Beans'))
+            if Product.select().where(Product.product_name.contains(row['product_name'])):
+                print("The product '{}' already exists. Checking if this is a newer version...".format(row['product_name']))
+                for product in Product.select().where(Product.product_name.contains(row['product_name'])):
+                    print('The existing timestamp for this item is: {}, and the item we are trying to insert has a timestamp of {}'.format(product.timestamp, row['date_updated']))
+                    if product.timestamp < row['date_updated']:
+                        print('Looks like we have a newer timestamp! Time to update the quantity/price/timestamp with this new info')
+                        product.timestamp = row['date_updated']
+                        product.product_quantity = row['product_quantity']
+                        product.product_price = row['product_price']
+                        product.save()
+                    else:
+                        print("this is NOT a newer timestamp, so nothing to do here.")
+            else:
+                Product.create(product_name=row['product_name'],
+                               timestamp=row['date_updated'],
+                               product_quantity=row['product_quantity'],
+                               product_price=row['product_price'])
 
         # practice querying--finding the "Beans"
         # for product in Product.select().where(Product.product_name.contains('Beans')):
@@ -97,6 +109,18 @@ def clear():
 def add_product():
     """Add a new product"""
     print("you made it into the add product function!!!!!!!!")
+    print(datetime.now())
+    theTime = datetime.now()
+    newProduct_name = input("Enter a name for the new product: ")
+    newProduct_quantity = input("enter total available quantity for this product: ")
+    newProduct_price = input('enter a price for the product in x.xx format (no dollar sign needed): ')
+    Product.create(product_name=newProduct_name,
+                   timestamp= datetime.now().strftime('%Y-%m-%d'),
+                  # timestamp=datetime.strptime('6/8/2018', '%m-%d-%Y'),
+                   product_quantity=newProduct_quantity,
+                   product_price=newProduct_price)
+
+
 
 
 def view_product():
@@ -126,7 +150,7 @@ def print_product(product):
           (' ' * (8 - len(str(product.product_id)))) +
           product.product_name +
           (' ' * (40 - len(str(product.product_name)))) +
-          str(product.timestamp)[:-9] +
+          str(product.timestamp)[:10] +
           (' ' * (30 - len(str(product.timestamp)))) +
           str(product.product_quantity) +
           (' ' * (12 - len(str(product.product_quantity)))) +
