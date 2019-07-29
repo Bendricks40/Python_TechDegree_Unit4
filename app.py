@@ -13,6 +13,7 @@ Other links:
 
 
 db = SqliteDatabase('inventory.db')
+header = "ID:     NAME:                                   DATE UPDATED:        QUANTITY:   PRICE:"
 
 
 class Product(Model):
@@ -119,7 +120,7 @@ def add_product():
 def view_product():
     """View the details of a specific product by entering it's ID"""
     choice = input("Enter the product ID you'd like to see details about: ")
-    print("ID:     NAME:                                   DATE UPDATED:        QUANTITY:   PRICE:")
+    print(header)
     for product in Product.select().where(Product.product_id == choice):
         print_product(product)
     print('\n')
@@ -128,7 +129,7 @@ def view_product():
 def view_every_product():
     """View EVERY product and their details"""
     print("\nHere are all the products in the database:")
-    print("ID:     NAME:                                   DATE UPDATED:        QUANTITY:   PRICE:")
+    print(header)
     for product in Product.select():
         print_product(product)
     print('\n')
