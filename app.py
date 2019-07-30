@@ -228,3 +228,4 @@ if __name__ == '__main__':
     initialize()
     open_and_clean_csv()
     menu_loop()
+
