@@ -20,7 +20,7 @@ header = "ID:     NAME:                                   DATE UPDATED:        Q
 
 class Product(Model):
     product_id = AutoField()
-    timestamp = DateTimeField()
+    date_updated = DateTimeField()
     product_name = TextField()
     product_quantity = IntegerField()
     product_price = IntegerField()
@@ -71,11 +71,11 @@ def open_and_clean_csv():
                 for product in Product.select().where(Product.product_name.contains(row['product_name'])):
                     # print('The existing timestamp for this item is: {}, and the '
                     # 'item we are trying to insert has a timestamp '
-                    # 'of {}'.format(product.timestamp, row['date_updated']))
-                    if product.timestamp < row['date_updated']:
+                    # 'of {}'.format(product.date_updated, row['date_updated']))
+                    if product.date_updated < row['date_updated']:
                         # print('Looks like we have a newer timestamp! Time to '
                         # 'update the quantity/price/timestamp with this new info')
-                        product.timestamp = row['date_updated']
+                        product.date_updated = row['date_updated']
                         product.product_quantity = row['product_quantity']
                         product.product_price = row['product_price']
                         product.save()
@@ -84,7 +84,7 @@ def open_and_clean_csv():
                         # print("this is NOT a newer timestamp, so nothing to do here.")
             else:
                 Product.create(product_name=row['product_name'],
-                               timestamp=row['date_updated'],
+                               date_updated=row['date_updated'],
                                product_quantity=row['product_quantity'],
                                product_price=row['product_price'])
 
@@ -136,7 +136,7 @@ def add_product():
     if validPrice and validQuantity:
         if Product.select().where(Product.product_name == newProduct_name):
             for product in Product.select().where(Product.product_name == newProduct_name):
-                product.timestamp = datetime.now().strftime('%Y-%m-%d')
+                product.date_updated = datetime.now().strftime('%Y-%m-%d')
                 product.product_quantity = newProduct_quantity
                 product.product_price = newProduct_price
                 product.save()
@@ -144,7 +144,7 @@ def add_product():
                       "and saved it so that now '{}' has been updated successfully!\n\n".format(newProduct_name))
         else:
             Product.create(product_name=newProduct_name,
-                           timestamp=datetime.now().strftime('%Y-%m-%d'),
+                           date_updated=datetime.now().strftime('%Y-%m-%d'),
                            product_quantity=int(newProduct_quantity),
                            product_price=int(newProduct_price))
             print("\n'{}' has been successfully added to the database!\n\n".format(newProduct_name))
@@ -186,7 +186,7 @@ def backup_products():
         csvfile.seek(0)
         csvfile.truncate()
         # Now write the new stuff into the file by first creating the header names:
-        fieldnames = ['product_id', 'product_name', 'product_timestamp', 'product_quantity', 'product_price']
+        fieldnames = ['product_id', 'product_name', 'date_updated', 'product_quantity', 'product_price']
         # Create the actual CSV writer object:
         productWriter = csv.DictWriter(csvfile, fieldnames=fieldnames)
         # Throw a good ol' header in there:
@@ -195,7 +195,7 @@ def backup_products():
         for product in Product.select():
             productWriter.writerow({'product_id': product.product_id,
                                     'product_name': product.product_name,
-                                    'product_timestamp': product.timestamp,
+                                    'date_updated': product.date_updated,
                                     'product_quantity': product.product_quantity,
                                     'product_price': product.product_price})
     # Close out the file:
@@ -208,8 +208,8 @@ def print_product(product):
           (' ' * (8 - len(str(product.product_id)))) +
           product.product_name +
           (' ' * (40 - len(str(product.product_name)))) +
-          str(product.timestamp)[:10] +
-          (' ' * (30 - len(str(product.timestamp)))) +
+          str(product.date_updated)[:10] +
+          (' ' * (30 - len(str(product.date_updated)))) +
           str(product.product_quantity) +
           (' ' * (12 - len(str(product.product_quantity)))) +
           '$' + str(product.product_price / 100))
