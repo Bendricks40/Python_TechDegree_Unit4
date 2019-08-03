@@ -89,27 +89,28 @@ def open_and_clean_csv():
                                product_price=row['product_price'])
 
 
+def clear():
+    os.system('cls' if os.name == 'nt' else 'clear')
+    os.system('clear')
+
+
 def menu_loop():
     """Show the menu"""
     choice = None
 
     while choice != 'q':
-        clear()
+
         print("Choose an option below, or press 'q' to quit")
         for key, value in menu.items():
             print('{}) {}'.format(key, value.__doc__))
         choice = input('Action: ').lower().strip()
 
         if choice in menu:
-            clear()
             menu[choice]()
+        elif choice == 'q':
+            break
         else:
             print("Oops, that wasn't a valid selection. Try again...\n")
-
-
-def clear():
-    os.system('cls' if os.name == 'nt' else 'clear')
-    os.system('clear')
 
 
 def add_product():
@@ -148,6 +149,8 @@ def add_product():
                            product_quantity=int(newProduct_quantity),
                            product_price=int(newProduct_price))
             print("\n'{}' has been successfully added to the database!\n\n".format(newProduct_name))
+            input("Press enter to continue...")
+            clear()
 
 
 def view_product():
@@ -157,14 +160,17 @@ def view_product():
 
         try:
             choice = int(input("Enter the product ID you'd like to see details about: "))
-            for product in Product.select().where(Product.product_id == choice):
-                exists = True
+            selected_product = Product.get_or_none(Product.product_id == choice)
+            if selected_product:
+                print('\n')
                 print(header)
-                print_product(product)
-                break
+                print_product(selected_product)
+                exists = True
+                print('\n')
+                input("Press enter to continue...")
+                clear()
             else:
                 print("That ID doesn't exist...try again!")
-            print('\n')
 
         except ValueError:
             print("Oops, that wasn't a valid number. Try again with a numeric ID")
@@ -177,12 +183,14 @@ def view_every_product():
     for product in Product.select():
         print_product(product)
     print('\n')
+    input("Press enter to continue...")
+    clear()
 
 
 def backup_products():
     """Creates a backup of entire database to a csv file"""
     with open('backup.csv', 'a') as csvfile:
-        # Clear out existing file contents, if any
+        # wipe out existing file contents, if any
         csvfile.seek(0)
         csvfile.truncate()
         # Now write the new stuff into the file by first creating the header names:
@@ -201,6 +209,8 @@ def backup_products():
     # Close out the file:
     csvfile.close()
     print("\nBackup has been created entitled 'backup.csv'\n\n")
+    input("Press enter to continue...")
+    clear()
 
 
 def print_product(product):
@@ -225,6 +235,8 @@ menu = OrderedDict([
 
 if __name__ == '__main__':
     welcome()
+    input("Press Enter to continue...\n")
+    clear()
     initialize()
     open_and_clean_csv()
     menu_loop()
